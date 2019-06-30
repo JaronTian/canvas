@@ -3,7 +3,7 @@ var context = yyy.getContext('2d');
 
 autoSetCanvasSize(yyy)
 
-listenToMouse(yyy)
+listenToUser(yyy)
 
 var eraserEnabled = false
 eraser.onclick = function() {
@@ -49,25 +49,59 @@ function drawLine(x1, y1, x2, y2) { //画线
   context.closePath()
 }
 
-function listenToMouse(canvas) { //监听鼠标
+function listenToUser(canvas) { //监听鼠标
   var using = false
   var lastPoint = {x: undefined,y: undefined}
-  canvas.onmousedown = function(aaa) { //点击鼠标
-    var x = aaa.clientX
-    var y = aaa.clientY
-    using = true
-    if (eraserEnabled) {
+
+  if(document.body.ontouchstart !== undefined){ // 特性检测
+    // 触屏设备
+    canvas.ontouchstart = function(aaa){
+      console.log('开始摸我了')
+      console.log(aaa)
+      var x = aaa.touches[0].clientX
+      var y = aaa.touches[0].clientY
+      using = true
+      if (eraserEnabled) {
+        context.clearRect(x - 5, y - 5, 10, 10)
+      }
+      else {
+        lastPoint = {"x": x,"y": y}
+      } 
+    }
+    canvas.ontouchmove = function(aaa){
+      console.log('边摸变动')
+      var x = aaa.touches[0].clientX
+      var y = aaa.touches[0].clientY
+      if(!using) return
+      if(eraserEnabled){
       context.clearRect(x - 5, y - 5, 10, 10)
+      }
+      else {
+        var newPoint = {"x": x,"y": y}
+        drawLine(lastPoint.x, lastPoint.y, newPoint.x,newPoint.y)
+        lastPoint = newPoint
+      }
     }
-    else {
-      lastPoint = {"x": x,"y": y}
+    canvas.ontouchend = function(){
+      console.log('摸完了')
+      using = false
     }
-      
-  }
-  canvas.onmousemove = function(aaa) { //滑动鼠标
-    var x = aaa.clientX
-    var y = aaa.clientY
-    if(!using) return
+  }else{//非触屏设备
+    canvas.onmousedown = function(aaa) { //点击鼠标
+      var x = aaa.clientX
+      var y = aaa.clientY
+      using = true
+      if (eraserEnabled) {
+        context.clearRect(x - 5, y - 5, 10, 10)
+      }
+      else {
+        lastPoint = {"x": x,"y": y}
+      } 
+    }
+    canvas.onmousemove = function(aaa) { //滑动鼠标
+      var x = aaa.clientX
+      var y = aaa.clientY
+      if(!using) return
       if(eraserEnabled){
       context.clearRect(x - 5, y - 5, 10, 10)
       }
@@ -76,8 +110,9 @@ function listenToMouse(canvas) { //监听鼠标
         drawLine(lastPoint.x, lastPoint.y, newPoint.x,newPoint.y)
         lastPoint = newPoint
       }   
-  }
-  canvas.onmouseup = function(aaa) { //释放鼠标
-    using = false
+    }
+    canvas.onmouseup = function(aaa) { //释放鼠标
+      using = false
+    }
   }
 }
