@@ -1,5 +1,6 @@
 var yyy = document.getElementById('xxx');
 var context = yyy.getContext('2d');
+var lineWidth = 5
 
 autoSetCanvasSize(yyy)
 
@@ -8,13 +9,58 @@ listenToUser(yyy)
 var eraserEnabled = false
 eraser.onclick = function() {
   eraserEnabled = true
-  actions.className = 'actions x'// actions actions.x 生效，actions.其他 无效
+  //actions.className = 'actions x'// actions actions.x 生效，actions.其他 无效
+  eraser.classList.add('active') // 增加类
+  pen.classList.remove('active') // 删除类
 }
-brush.onclick = function(){
+pen.onclick = function(){
   eraserEnabled = false
-  actions.className = 'actions'
+  //actions.className = 'actions'
+  eraser.classList.remove('active')
+  pen.classList.add('active')
 }
 
+red.onclick = function(){
+  context.fillStyle = 'red'
+  context.strokeStyle = 'red'
+  red.classList.add('active')
+  green.classList.remove('active')
+  blue.classList.remove('active')
+}
+green.onclick = function(){
+  context.fillStyle = 'green'
+  context.strokeStyle = 'green'
+  green.classList.add('active')
+  red.classList.remove('active')
+  blue.classList.remove('active')
+}
+blue.onclick = function(){
+  context.fillStyle = 'blue'
+  context.strokeStyle = 'blue'
+  blue.classList.add('active')
+  green.classList.remove('active')
+  red.classList.remove('active')
+}
+
+thin.onclick = function(){
+  lineWidth = 5
+}
+thick.onclick = function(){
+  lineWidth = 10
+}
+
+clear.onclick = function(){
+  context.clearRect(0, 0, yyy.width, yyy.height)
+}
+download.onclick = function(){ // 下载
+  var url = yyy.toDataURL("image/png")
+  var a = document.createElement('a')
+  document.body.appendChild(a)
+  a.href = url
+  a.download = '我的画儿'
+  a.target = '_blank'
+  a.click()
+}
 /******/
 function autoSetCanvasSize(canvas) { //自动设置画布尺寸
   setCanvasSize()
@@ -32,18 +78,18 @@ function autoSetCanvasSize(canvas) { //自动设置画布尺寸
   }
 }
 
-function drawCircle(x, y, radius) { //画圆
-  context.beginPath()
-  context.fillStyle = 'black'
-  context.arc(x, y, radius, 0, Math.PI * 2);
-  context.fill()
+function drawCircle(x, y, radius) { //画圆//如果不画圆，变粗后看线是一段一段的，圆半径是线宽的一半
+   context.beginPath()
+   context.fillStyle = lineWidth // 这个优先级更高，换不了色
+   context.arc(x, y, radius, 0, Math.PI * 2);
+   context.fill()
 }
 
 function drawLine(x1, y1, x2, y2) { //画线
-  context.beginPath();
-  context.strokeStyle = 'black'
+  context.beginPath()
+  // context.strokeStyle = 'black' // 这个优先级更高，换不了色
   context.moveTo(x1, y1) // 起点
-  context.lineWidth = 5
+  context.lineWidth = lineWidth
   context.lineTo(x2, y2) // 终点
   context.stroke()
   context.closePath()
@@ -78,6 +124,7 @@ function listenToUser(canvas) { //监听鼠标
       }
       else {
         var newPoint = {"x": x,"y": y}
+        drawCircle(x, y, lineWidth/2) //如果不画圆，变粗后看线是一段一段的，圆半径是线宽的一半
         drawLine(lastPoint.x, lastPoint.y, newPoint.x,newPoint.y)
         lastPoint = newPoint
       }
@@ -107,6 +154,7 @@ function listenToUser(canvas) { //监听鼠标
       }
       else {
         var newPoint = {"x": x,"y": y}
+        drawCircle(x, y, lineWidth/2)//如果不画圆，变粗后看线是一段一段的，圆半径是线宽的一半
         drawLine(lastPoint.x, lastPoint.y, newPoint.x,newPoint.y)
         lastPoint = newPoint
       }   

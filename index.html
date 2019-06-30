@@ -13,9 +13,31 @@
     <canvas id="xxx" width=300 height=300>
     </canvas>
     <div class="actions" id=actions>
-      <button id=eraser>橡皮擦</button>
-      <button id=brush>画笔</button>
+      <svg id="pen" class="active icon" aria-hidden="true"> <!--默认用pen，所有加active 类-->
+          <use xlink:href="#icon-pen"></use>
+      </svg>
+      <svg id="eraser" class="icon" aria-hidden="true">
+          <use xlink:href="#icon-erase"></use>
+      </svg>
+      <svg id="clear" class="icon" aria-hidden="true">
+          <use xlink:href="#icon-clear"></use>
+      </svg>
+      <svg id="download" class="icon" aria-hidden="true">
+          <use xlink:href="#icon-save"></use>
+      </svg>
+      <!-- <button id=eraser>橡皮擦</button>
+      <button id=brush>画笔</button> -->
     </div>
+    <ol class="colors">
+      <li id="red" class="red active"></li>
+      <li id="green" class="green"></li>
+      <li id="blue" class="blue"></li>
+    </ol>
+    <ol class="sizes">
+      <li id="thin" class="thin"></li>
+      <li id="thick" class="thick"></li>
+    </ol>
     <script src="./main.js"></script>
+    <script src="//at.alicdn.com/t/font_1268845_t7ly9v94tj.js"></script><!--可以放在head里面，加载快一些-->
   </body>
 </html>
